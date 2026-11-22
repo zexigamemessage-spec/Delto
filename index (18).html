@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deltos Kişiye Özel Key</title>
+    <style>
+        body {
+            background-color: #0b0b0b;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 15px;
+        }
+        .kutu {
+            background-color: #161616;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            width: 100%;
+            max-width: 360px;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 12px 0;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background-color: #0e0e0e;
+            color: #fff;
+            font-size: 14px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .key {
+            background-color: #0e0e0e;
+            border: 1px dashed #555;
+            padding: 14px;
+            font-size: 19px;
+            font-weight: bold;
+            letter-spacing: 1.5px;
+            margin: 14px 0;
+            border-radius: 8px;
+            user-select: all;
+            display: none;
+        }
+        button {
+            background-color: #2b2b2b;
+            color: #fff;
+            border: 1px solid #555;
+            padding: 12px;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 6px;
+        }
+        .bilgi {
+            color: #888;
+            font-size: 12px;
+            margin-top: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="kutu">
+        <h2>Deltos Özel Key</h2>
+        <p style="color:#aaa; font-size:13px;">Roblox kullanıcı adını yaz, sana özel tek kullanımlık anahtar oluştur:</p>
+        
+        <input type="text" id="kullaniciAdi" placeholder="Roblox Kullanıcı Adın">
+        <button onclick="keyOlustur()">Sana Özel Key Üret</button>
+
+        <div class="key" id="keyMetni"></div>
+        <button id="kopyalaBtn" style="display:none; background:#1f3a29;" onclick="kopyala()">Key'i Kopyala</button>
+        
+        <div class="bilgi">Her anahtar sadece yazılan hesaba özeldir ve 1 kez kullanılabilir.</div>
+    </div>
+
+    <script>
+        function isimSifrele(isim) {
+            isim = isim.trim().toLowerCase();
+            let toplam = 4821;
+            for (let i = 0; i < isim.length; i++) {
+                toplam = (toplam * 31 + isim.charCodeAt(i)) % 999983;
+            }
+            return toplam;
+        }
+
+        function keyOlustur() {
+            const isim = document.getElementById("kullaniciAdi").value.trim();
+            if (isim.length < 3) {
+                alert("Lütfen geçerli bir Roblox kullanıcı adı yaz!");
+                return;
+            }
+
+            // Her 10 dakikada bir değişen zaman dilimi + kullanıcı adına özel hash
+            const zamanDilimi = Math.floor(Date.now() / (1000 * 60 * 10));
+            const isimKodu = isimSifrele(isim);
+            const sonSayi = ((isimKodu * 7 + zamanDilimi * 13) % 899999) + 100000;
+
+            const harfler = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+            const h1 = harfler[isimKodu % harfler.length];
+            const h2 = harfler[zamanDilimi % harfler.length];
+
+            const ozelKey = "DELTOS-" + sonSayi + "-" + h1 + h2;
+
+            const keyKutusu = document.getElementById("keyMetni");
+            keyKutusu.innerText = ozelKey;
+            keyKutusu.style.display = "block";
+            document.getElementById("kopyalaBtn").style.display = "block";
+        }
+
+        function kopyala() {
+            const metin = document.getElementById("keyMetni").innerText;
+            navigator.clipboard.writeText(metin);
+            alert("Sana özel Key kopyalandı: " + metin);
+        }
+    </script>
+</body>
+</html>
+>
